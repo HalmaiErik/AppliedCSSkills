@@ -87,8 +87,20 @@ public class AnagramDictionary {
     }
 
     public String pickGoodStarterWord() {
-        int randStart = random.nextInt() ;
+        int randStart = random.nextInt(wordList.size()) + 1;
+        while(getAnagramsCount(wordList.get(randStart)) < MIN_NUM_ANAGRAMS)
+            randStart = random.nextInt(wordList.size()) + 1;
+        return wordList.get(randStart);
 
         // return "stop";
+    }
+
+    private int getAnagramsCount(String s) {
+        int count = 0;
+        for(String word : wordList) {
+            if(sortLetters(word).equals((sortLetters(s))))
+                count += 1;
+        }
+        return count;
     }
 }
