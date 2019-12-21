@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,13 +23,18 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Drawable> diceImages;
     private TextView scoreView;
 
+    private Button rollButt;
+    private Button holdButt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         scoreView = findViewById(R.id.textView);
-        diceView = findViewById(R.id.imageView2);
+        diceView = findViewById(R.id.diceImage);
+        rollButt = findViewById(R.id.rollButton);
+        holdButt = findViewById(R.id.buttonHold);
 
         diceImages = new ArrayList<Drawable>();
         diceImages.add(getResources().getDrawable(R.drawable.dice1));
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         if(roll == 0) {
             userTurnScore = 0;
             scoreView.setText("Your score: " + userOverallScore + " Computer score: " + computerOverallScore + " Your turn score: X");
+            computerTurn();
         }
         else {
             userTurnScore += roll + 1;
@@ -64,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             userOverallScore += userTurnScore;
             userTurnScore = 0;
             scoreView.setText("Your score: " + userOverallScore + " Computer score: " + computerOverallScore + " Your turn score: " + userTurnScore);
+            computerTurn();
         }
     }
 
@@ -73,5 +81,34 @@ public class MainActivity extends AppCompatActivity {
         computerTurnScore = 0;
         computerOverallScore = 0;
         scoreView.setText("Your score: " + userOverallScore + " Computer score: " + computerOverallScore + " Your turn score: " + userTurnScore);
+    }
+
+    private void computerTurn() {
+        rollButt.setEnabled(false);
+        holdButt.setEnabled(false);
+
+        while(computerTurnScore < 20) {
+            Random random = new Random();
+            int roll = random.nextInt(6);
+            diceView.setImageDrawable(diceImages.get(roll));
+
+            if(roll == 0) {
+                computerTurnScore = 0;
+                scoreView.setText("Your score: " + userOverallScore + " Computer score: " + computerOverallScore + " Computer's turn score: X");
+                rollButt.setEnabled(true);
+                holdButt.setEnabled(true);
+                return;
+            }
+            else {
+                computerTurnScore += roll + 1;
+                scoreView.setText("Your score: " + userOverallScore + " Computer score: " + computerOverallScore + " Computer's turn score: " + computerTurnScore);
+            }
+        }
+
+        computerOverallScore += computerTurnScore;
+        scoreView.setText("Your score: " + userOverallScore + " Computer score: " + computerOverallScore + " Your turn score: " + userTurnScore);
+
+        rollButt.setEnabled(true);
+        holdButt.setEnabled(true);
     }
 }
