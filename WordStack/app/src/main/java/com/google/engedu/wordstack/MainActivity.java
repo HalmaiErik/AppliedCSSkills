@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Random;
 import java.util.Stack;
 
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private Random random = new Random();
     private StackedLayout stackedLayout;
     private String word1, word2;
-    private LetterTile letterTile = new LetterTile();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,15 +143,34 @@ public class MainActivity extends AppCompatActivity {
         messageBox.setText("Game started");
 
         // Get 2 random words from words
-        int indexWord = random.nextInt();
-        word1 = words.get(indexWord);
-        indexWord = random.nextInt();
-        word2 = words.get(indexWord);
+        int indexWord1 = random.nextInt(words.size());
+        int indexWord2 = random.nextInt(words.size());
+        while(indexWord2 == indexWord1)
+            indexWord2 = random.nextInt(words.size());
 
-        int lengthShortestWord = Math.min(word1.length(), word2.length());
-        int counter = 0;
-        while(counter < lengthShortestWord) {
+        word1 = words.get(indexWord1);
+        word2 = words.get(indexWord2);
 
+        // Create a generatedWord from thw shuffled letters of word1 & word2
+        String generatedWord = "";
+        int word1Count = 0;
+        int word2Count = 0;
+        while(word1Count < word1.length() || word2Count < word2.length()) {
+            if(random.nextInt(2) == 1 && word1Count < word1.length()) {
+                generatedWord += word1.charAt(word1Count);
+                word1Count++;
+            }
+            else if(word2Count < word2.length()) {
+                generatedWord += word2.charAt(word2Count);
+                word2Count++;
+            }
+        }
+        // messageBox.setText(generatedWord);
+
+
+        // Push it onto the stack
+        for (int i = generatedWord.length() - 1; i >= 0; i--) {
+            stackedLayout.push(new LetterTile(this, generatedWord.charAt(i)));
         }
         return true;
     }
