@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.EmptyStackException;
 import java.util.Random;
 import java.util.Stack;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> words = new ArrayList<>();
     private Random random = new Random();
     private StackedLayout stackedLayout;
+    private Stack<LetterTile> placedTiles = new Stack<>();
     private String word1, word2;
 
     @Override
@@ -87,11 +89,9 @@ public class MainActivity extends AppCompatActivity {
                     TextView messageBox = (TextView) findViewById(R.id.message_box);
                     messageBox.setText(word1 + " " + word2);
                 }
-                /**
-                 **
-                 **  YOUR CODE GOES HERE
-                 **
-                 **/
+
+                placedTiles.push(tile);
+
                 return true;
             }
             return false;
@@ -142,6 +142,18 @@ public class MainActivity extends AppCompatActivity {
         TextView messageBox = (TextView) findViewById(R.id.message_box);
         messageBox.setText("Game started");
 
+        ViewGroup word1LinearLayout = findViewById(R.id.word1);
+        ViewGroup word2LinearLayout = findViewById(R.id.word2);
+
+        // Remove views when start pressed
+        word1LinearLayout.removeAllViews();
+        word2LinearLayout.removeAllViews();
+
+        // Clear stackedLayout
+        try {
+            stackedLayout.clear();
+        } catch(EmptyStackException e) {}
+
         // Get 2 random words from words
         int indexWord1 = random.nextInt(words.size());
         int indexWord2 = random.nextInt(words.size());
@@ -176,11 +188,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onUndo(View view) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        ViewGroup word1LinearLayout = findViewById(R.id.word1);
+        ViewGroup word2LinearLayout = findViewById(R.id.word2);
+
+        if(!placedTiles.empty()) {
+            // Check in which word was the letter
+            if(((View)placedTiles.peek().getParent()).getId() == R.id.word1) {
+                word1LinearLayout.removeView(placedTiles.peek());
+                word1 =  word1.substring(0, word1.length() - 1);
+                placedTiles.pop().moveToViewGroup(stackedLayout);
+            }
+            else {
+                word2LinearLayout.removeView(placedTiles.peek());
+                word2 = word2.substring(0, word2.length() - 1);
+                placedTiles.pop().moveToViewGroup(stackedLayout);
+            }
+        }
         return true;
     }
 }
