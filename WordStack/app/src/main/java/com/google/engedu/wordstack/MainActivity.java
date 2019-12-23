@@ -71,11 +71,11 @@ public class MainActivity extends AppCompatActivity {
         verticalLayout.addView(stackedLayout, 3);
 
         View word1LinearLayout = findViewById(R.id.word1);
-        word1LinearLayout.setOnTouchListener(new TouchListener());
-        //word1LinearLayout.setOnDragListener(new DragListener());
+        //word1LinearLayout.setOnTouchListener(new TouchListener());
+        word1LinearLayout.setOnDragListener(new DragListener());
         View word2LinearLayout = findViewById(R.id.word2);
-        word2LinearLayout.setOnTouchListener(new TouchListener());
-        //word2LinearLayout.setOnDragListener(new DragListener());
+        //word2LinearLayout.setOnTouchListener(new TouchListener());
+        word2LinearLayout.setOnDragListener(new DragListener());
     }
 
     private class TouchListener implements View.OnTouchListener {
@@ -127,11 +127,7 @@ public class MainActivity extends AppCompatActivity {
                         TextView messageBox = (TextView) findViewById(R.id.message_box);
                         messageBox.setText(word1 + " " + word2);
                     }
-                    /**
-                     **
-                     **  YOUR CODE GOES HERE
-                     **
-                     **/
+                    placedTiles.push(tile);
                     return true;
             }
             return false;
@@ -192,17 +188,7 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup word2LinearLayout = findViewById(R.id.word2);
 
         if(!placedTiles.empty()) {
-            // Check in which word was the letter
-            if(((View)placedTiles.peek().getParent()).getId() == R.id.word1) {
-                word1LinearLayout.removeView(placedTiles.peek());
-                word1 =  word1.substring(0, word1.length() - 1);
-                placedTiles.pop().moveToViewGroup(stackedLayout);
-            }
-            else {
-                word2LinearLayout.removeView(placedTiles.peek());
-                word2 = word2.substring(0, word2.length() - 1);
-                placedTiles.pop().moveToViewGroup(stackedLayout);
-            }
+            placedTiles.pop().moveToViewGroup(stackedLayout);
         }
         return true;
     }
