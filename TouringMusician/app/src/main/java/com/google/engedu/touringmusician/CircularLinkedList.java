@@ -34,21 +34,31 @@ public class CircularLinkedList implements Iterable<Point> {
 
     Node head;
 
+    private void insertFirst(Node node) {
+        head = node;
+        head.prev = head;
+        head.next = head;
+    }
+
+    private void insertNode(Node node, Node curr) {
+        node.next = curr;
+        node.prev = curr.prev;
+        curr.prev = node;
+        node.prev.next = node;
+        
+    }
+
     public void insertBeginning(Point p) {
         Node newNode = new Node();
         newNode.point = p;
 
         if(this.head == null) {
-            newNode.next = newNode;
-            newNode.prev = newNode;
+            insertFirst(newNode);
         }
         else {
-            newNode.next = this.head;
-            newNode.prev = this.head.prev;
-            this.head.prev = newNode;
-            newNode.prev.next = newNode;
+            insertNode(newNode, head);
+            this.head = newNode;
         }
-        this.head = newNode;
     }
 
     private float distanceBetween(Point from, Point to) {
@@ -75,19 +85,58 @@ public class CircularLinkedList implements Iterable<Point> {
     }
 
     public void insertNearest(Point p) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        Node node = new Node();
+        node.point = p;
+
+        Node nearest = null;
+        float nearestDist = Float.POSITIVE_INFINITY;
+        Node curr = this.head;
+
+        if(this.head == null)
+            insertFirst(node);
+        else {
+            do {
+                curr = curr.next;
+                if(distanceBetween(curr.point, p) < nearestDist) {
+                    nearestDist = distanceBetween(curr.point, p);
+                    nearest = curr;
+                }
+            }
+            while (curr != head);
+
+            if(distanceBetween(p, nearest.prev.point) < distanceBetween(p, nearest.next.point))
+                insertNode(node, nearest);
+            else
+                insertNode(node, nearest.next);
+        }
+
     }
 
     public void insertSmallest(Point p) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        Node node = new Node();
+        node.point = p;
+        Node best = null;
+        Node curr = head;
+        double distance = Double.POSITIVE_INFINITY;
+        if(head == null) {
+            insertFirst(node);
+        }
+        else if(head.next == head) {
+            insertNode(node, head);
+        }
+        else {
+            do {
+                double dist = totalDistance() - distanceBetween(curr.point, curr.next.point);
+                dist += distanceBetween(p, curr.point) + distanceBetween(p, curr.next.point);
+                if(dist < distance) {
+                    distance = dist;
+                    best = curr.next;
+                }
+                curr = curr.next;
+            }
+            while (curr != head);
+            insertNode(node, best);
+        }
     }
 
     public void reset() {
