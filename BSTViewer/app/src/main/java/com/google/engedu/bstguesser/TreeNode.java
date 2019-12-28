@@ -38,11 +38,24 @@ public class TreeNode {
     }
 
     public void insert(int valueToInsert) {
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        // Right subtree
+        if(valueToInsert > value) {
+            if(right == null) {
+                TreeNode node = new TreeNode(valueToInsert);
+                this.right = node;
+            }
+            else
+                right.insert(valueToInsert);
+        }
+        // Left subtree
+        else {
+            if(left == null) {
+                TreeNode node = new TreeNode(valueToInsert);
+                this.left = node;
+            }
+            else
+                left.insert(valueToInsert);
+        }
     }
 
     public int getValue() {

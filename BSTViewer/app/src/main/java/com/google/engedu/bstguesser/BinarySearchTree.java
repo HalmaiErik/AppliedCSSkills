@@ -51,11 +51,7 @@ public class BinarySearchTree {
 
     private TreeNode search(int value) {
         TreeNode current = root;
-        /**
-         **
-         **  YOUR CODE GOES HERE
-         **
-         **/
+        
         return current;
     }
 
